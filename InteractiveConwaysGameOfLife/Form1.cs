@@ -26,13 +26,8 @@ namespace InteractiveConwaysGameOfLife
         public Form1()
         {
             InitializeComponent();
-
-
+            
             gamePanel.Paint += gamePanel_Paint;
-
-            // prevents any flickering
-          //  gamePanel.DoubleBuffered(true);
-
         }
 
 
@@ -50,20 +45,16 @@ namespace InteractiveConwaysGameOfLife
 
 
             // looping through each cell in the gameArray
-
             for (int row = 0; row < gameArray.GetLength(0) - 1; row++)
             {
                 for (int col = 0; col < gameArray.GetLength(1) - 1; col++)
                 {
                     int neighbours = ReturnNeighbours(gameArray, row, col);
 
-                    //Console.WriteLine(neighbours);
-
-
                     // checks if the cell is alive, and then applies conway's rules 
                     if (gameArray[row, col] == 1)
                     {
-                        // if cell has either 2 or 3 neighbouring cells then it will live
+                        // if the current cell has either 2 or 3 neighbouring cells then it will live otherwise it will die
                         if ((neighbours == 2) || (neighbours == 3))
 
                         {
@@ -87,7 +78,6 @@ namespace InteractiveConwaysGameOfLife
             }
 
             gameArray = workingArray;
-
            // Thread.Sleep(250);
 
             // refreshing the panel
@@ -103,20 +93,20 @@ namespace InteractiveConwaysGameOfLife
 
 
 
-            // Min and Max is used to find out whether the neighbouring value will be in boundary of array
-            // like a typewriter 
+            // min and max is used to find out whether the neighbouring cell exists within the boundary of the gameArray
+            // e.g. if current cell is (0,0), row-1 will return -1 and would cause an error if not for Math.Max() 
+            // if current cell is (9,0), row+1 will return 10 which would also cause an error if not for Math.Min()
+            
             for (int y = Math.Max(0, row - 1); y <= Math.Min(rowLimit, row + 1); y++)
             {
                 for (int x = Math.Max(0, col - 1); x <= Math.Min(colLimit, col + 1); x++)
                 {
-
-                    // outputs everything except the centre cell
+                    // check to ensure that the current cell is not included when checking for neighbours
                     if (x != col || y != row)
                     {
 
                         if (gameArray[y, x] == 1)
                         {
-
                             neighbours++;
                             //Console.WriteLine("(" + col + "," + row + ")" + neighbours);
                         }
@@ -171,7 +161,7 @@ namespace InteractiveConwaysGameOfLife
         // detects input from user and then either turns a cell on or off depending on its current state
         private void gamePanel_MouseClick(object sender, MouseEventArgs e)
         {
-            
+            // to find the correct cell
             int row = e.Y / cellSize;
             int col = e.X / cellSize;
 
@@ -206,7 +196,7 @@ namespace InteractiveConwaysGameOfLife
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            // each tick 
+            // the game board is updated every tick until the user presses the stop button
             MainGame();
         }
 
